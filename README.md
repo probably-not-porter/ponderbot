@@ -9,6 +9,7 @@ Supports pretty wide misspellings.
 ```
 # .env
 DISCORD_TOKEN=[TOKEN]
+CONFIDENCE_THRESHOLD=[1-100]
 ```
 2. run `./get_cards.sh` to download the data.
 3. `pip3 install python-dotenv fuzzywuzzy discord.py` to download dependencies.
