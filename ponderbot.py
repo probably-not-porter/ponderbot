@@ -25,7 +25,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 client = discord.Client(command_prefix='$', intents=discord.Intents.all())
 
 # Load card data
-with open('unique-cards.json') as f:
+with open(os.getenv('DATA_PATH')) as f:
     data = json.load(f)
 
 ################# FUZZY SEARCH #################
