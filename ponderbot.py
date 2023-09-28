@@ -8,7 +8,7 @@
 #    $$ |     $$    $$/ $$ |  $$ |$$    $$ |$$       |$$ |      $$    $$/ $$    $$/   $$  $$/ 
 #    $$/       $$$$$$/  $$/   $$/  $$$$$$$/  $$$$$$$/ $$/       $$$$$$$/   $$$$$$/     $$$$/  
 #                                                                                         
-#                                             v1.0   /   April 2023   /   Porter Libby                                                                              
+#                                             v1.1   /   April 2023   /   Porter Libby                                                                              
 #                                                                                         
 ################# Imports #################
 import json
@@ -30,6 +30,10 @@ with open(os.getenv('DATA_PATH')) as f:
 
 ################# FUZZY SEARCH #################
 def search(input_str):
+    reverse_mode = False
+    if input_str[0] == "!":
+        input_str = input_str[1:]
+        reverse_mode = True
     # Find the closest match to the input string
     max_score = 0 # highest probability of a matching term
     closest_match = None
@@ -45,11 +49,45 @@ def search(input_str):
     # Print the closest match
     if closest_match:
         if max_score > int(os.getenv('CONFIDENCE_THRESHOLD')):
-            # if match is good enough to return to use
-            return ("Search: " + input_str + " (" + closest_match['name'] + ")", closest_match['image_uris']['large'], "Confidence: " + str(max_score) + "%")
+            if reverse_mode == False:
+                # if match is good enough to return to use
+                return ("Search: " + input_str + " (" + closest_match['name'] + ")", closest_match['image_uris']['large'], "Confidence: " + str(max_score) + "%")
+            else:
+                return reverse_search(closest_match)
         else:
             # if match is not good enough
             return ("Search: " + input_str, None, "Uncertain")
+        
+################# FUZZY REVERSE SEARCH #################
+def reverse_search(card):
+    best_scores = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+    best_items = [None,None,None,None,None,None,None,None,None,None]
+    names = []
+    for item in data:
+        if item['name'] != card['name']:
+            otext_score = 0
+            type_score = 0
+            cost_score = 0
+            if "oracle_text" in item:
+                otext_score = fuzz.ratio(card['oracle_text'], item['oracle_text'])
+            if 'type_line' in item:
+                type_score = fuzz.ratio(card['type_line'], item['type_line'])
+            if 'mana_cost' in item:
+                cost_score = fuzz.ratio(card['mana_cost'], item['mana_cost'])
+
+            total_score = (otext_score * 0.8) + (type_score * 0.1) + (cost_score * 0.1)
+            for b in range(len(best_scores)):
+                bscore = best_scores[b]
+                if total_score > bscore and item['name'] not in names:
+                    names.append(item['name'])
+                    best_scores[b] = total_score
+                    best_items[b] = item
+                    break
+    out_text = "\n"
+    for i in range(len(best_scores)):
+        out_text += best_items[i]['name'] + " (" + str(round(best_scores[i],2)) + "%)\n" + best_items[i]['image_uris']['large'] + "\n"
+    #return ("Search: input term (reverse)", "image", "list with closeness?")
+    return ("Search: " + card['name'] + "\n", card['image_uris']['large'], out_text)
 
 ############# DISCORD MESSAGE EVENT #############
 @client.event
