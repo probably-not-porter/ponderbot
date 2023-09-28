@@ -9,7 +9,7 @@
     $$ |     $$    $$/ $$ |  $$ |$$    $$ |$$       |$$ |      $$    $$/ $$    $$/   $$  $$/ 
     $$/       $$$$$$/  $$/   $$/  $$$$$$$/  $$$$$$$/ $$/       $$$$$$$/   $$$$$$/     $$$$/  
                                                                                          
-                                             v1.0   /   April 2023   /   Porter Libby 
+                                             v1.1   /   April 2023   /   Porter Libby 
 ```
 Ponder the orb at full speed. 
 For if you don't want all that extra stuff from an mtg bot, just wanna see the picture of the card when you type {lightning bolt}.
