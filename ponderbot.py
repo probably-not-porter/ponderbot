@@ -89,6 +89,14 @@ def reverse_search(card):
     #return ("Search: input term (reverse)", "image", "list with closeness?")
     return ("Search: " + card['name'] + "\n", card['image_uris']['large'], out_text)
 
+############# SEND EMBED ##############
+async def sendEmbed():
+    embedVar = discord.Embed(title="Title", description="Desc", color=0x00ff00)
+    embedVar.add_field(name="Field1", value="hi", inline=False)
+    embedVar.add_field(name="Field2", value="hi2", inline=False)
+    await message.channel.send(embed=embedVar)
+
+
 ############# DISCORD MESSAGE EVENT #############
 @client.event
 async def on_message(message):
